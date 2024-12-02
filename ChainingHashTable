@@ -1,0 +1,53 @@
+import java.util.LinkedList;
+import java.util.List;
+
+public class ChainingHashTable {
+    private List<String>[] table;
+    private int comparisons;
+
+    @SuppressWarnings("unchecked")
+    public ChainingHashTable(int size) {
+        table = new List[size];
+        for (int i = 0; i < size; i++) {
+            table[i] = new LinkedList<>();
+        }
+    }
+
+    private int hashCodeOld(String key, int tableSize) {
+        int hash = 0;
+        int skip = Math.max(1, key.length() / 8);
+        for (int i = 0; i < key.length(); i += skip) {
+            hash = (hash * 37) + key.charAt(i);
+        }
+        return Math.abs(hash % tableSize);
+    }
+
+    private int hashCodeNew(String key, int tableSize) {
+        int hash = 0;
+        for (int i = 0; i < key.length(); i++) {
+            hash = (hash * 31) + key.charAt(i);
+        }
+        return Math.abs(hash % tableSize);
+    }
+
+    public void insert(String key, boolean useOldHash, int tableSize) {
+        int hash = useOldHash ? hashCodeOld(key, tableSize) : hashCodeNew(key, tableSize);
+        table[hash].add(key);
+    }
+
+    public boolean contains(String key, boolean useOldHash, int tableSize) {
+        comparisons = 0;
+        int hash = useOldHash ? hashCodeOld(key, tableSize) : hashCodeNew(key, tableSize);
+        for (String word : table[hash]) {
+            comparisons++;
+            if (word.equals(key)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public int getComparisons() {
+        return comparisons;
+    }
+}
