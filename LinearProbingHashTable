@@ -1,0 +1,50 @@
+public class LinearProbingHashTable {
+    private String[] table;
+    private int comparisons;
+
+    public LinearProbingHashTable(int size) {
+        table = new String[size];
+    }
+
+    private int hashCodeOld(String key, int tableSize) {
+        int hash = 0;
+        int skip = Math.max(1, key.length() / 8);
+        for (int i = 0; i < key.length(); i += skip) {
+            hash = (hash * 37) + key.charAt(i);
+        }
+        return Math.abs(hash % tableSize);
+    }
+
+    private int hashCodeNew(String key, int tableSize) {
+        int hash = 0;
+        for (int i = 0; i < key.length(); i++) {
+            hash = (hash * 31) + key.charAt(i);
+        }
+        return Math.abs(hash % tableSize);
+    }
+
+    public void insert(String key, boolean useOldHash, int tableSize) {
+        int hash = useOldHash ? hashCodeOld(key, tableSize) : hashCodeNew(key, tableSize);
+        while (table[hash] != null) {
+            hash = (hash + 1) % tableSize;
+        }
+        table[hash] = key;
+    }
+
+    public boolean contains(String key, boolean useOldHash, int tableSize) {
+        comparisons = 0;
+        int hash = useOldHash ? hashCodeOld(key, tableSize) : hashCodeNew(key, tableSize);
+        while (table[hash] != null) {
+            comparisons++;
+            if (table[hash].equals(key)) {
+                return true;
+            }
+            hash = (hash + 1) % tableSize;
+        }
+        return false;
+    }
+
+    public int getComparisons() {
+        return comparisons;
+    }
+}
