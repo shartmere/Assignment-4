@@ -1,5 +1,5 @@
 # Assignment-4
-
+Alexander Rupp 48835402
 Password: account8
 Is strong: false
 Chaining comparisons: 1
